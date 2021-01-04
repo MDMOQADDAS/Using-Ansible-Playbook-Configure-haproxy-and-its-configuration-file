@@ -1,0 +1,30 @@
+- hosts: lb
+  tasks:
+  - name: "Installing Haproxy"
+    package:
+            name: "haproxy"
+            state: present
+  - name: "Configure the haproxy.cfg "
+    template:
+            dest: "/etc/haproxy/haproxy.cfg"
+            src: "haproxy.cfg.j2"
+  - name: "Starting the haproxy service"
+    service:
+            name: "haproxy"
+            state: restarted
+
+- hosts: bs
+  tasks:
+  - name: "Installing the httpd in back end service"
+    package:
+            name: "httpd,php"
+            state: present
+  - name: "configure the http service"
+    copy:
+            dest: "/var/www/html/index.php"
+            src: "src.php"
+  - name: "Start the Service"
+    service:
+            name: "httpd"
+            state: restarted
+
